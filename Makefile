@@ -34,13 +34,13 @@ smoke:
 lint:
 	npm run lint
 	npm run fmt:check
-	npx tsc --noEmit
+	npx tsc -b
 
 fmt:
 	npm run fmt
 
 pages-preview:
-	npx vite preview --host 127.0.0.1 --port 4173
+	node scripts/serve-docs.mjs 4173
 
 data:
 	@printf '%s\n' 'Mode A has no offline data pipeline.'

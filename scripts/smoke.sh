@@ -3,10 +3,10 @@ set -euo pipefail
 
 npm run build
 
-PORT="${PORT:-4173}"
+PORT="${PORT:-$((4300 + RANDOM % 1000))}"
 BASE_URL="http://127.0.0.1:${PORT}/earthquake-wave-propagation/"
 
-npx vite preview --host 127.0.0.1 --port "${PORT}" >/tmp/earthquake-wave-propagation-smoke.log 2>&1 &
+node scripts/serve-docs.mjs "${PORT}" >/tmp/earthquake-wave-propagation-smoke.log 2>&1 &
 SERVER_PID=$!
 trap 'kill "${SERVER_PID}" >/dev/null 2>&1 || true' EXIT
 

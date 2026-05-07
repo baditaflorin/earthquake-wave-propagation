@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.9",
+    "lucide-react": "^1.14.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "three": "^0.184.0",
@@ -25,10 +26,12 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.12.2",
+    "@types/pngjs": "^6.0.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.1",
     "@vitejs/plugin-react": "^6.0.1",
+    "@webgpu/types": "^0.1.69",
     "eslint": "^10.2.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -36,6 +39,7 @@
     "globals": "^17.5.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.59.1",
+    "pngjs": "^7.0.0",
     "prettier": "^3.8.3",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
