@@ -1,0 +1,11 @@
+{
+  "name": "Earthquake-Wave Propagation",
+  "short_name": "Quake Waves",
+  "description": "Interactive P-wave and S-wave propagation demo.",
+  "display": "standalone",
+  "start_url": "/earthquake-wave-propagation/",
+  "scope": "/earthquake-wave-propagation/",
+  "theme_color": "#183128",
+  "background_color": "#eef3e7",
+  "icons": []
+}

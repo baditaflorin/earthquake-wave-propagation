@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+message_file="$1"
+if ! grep -Eq '^(feat|fix|docs|chore|refactor|test|ops|data|build)(\([a-z0-9._-]+\))?: .+' "${message_file}"; then
+  printf '%s\n' 'Commit message must use Conventional Commits, for example feat: add wave controls'
+  exit 1
+fi
