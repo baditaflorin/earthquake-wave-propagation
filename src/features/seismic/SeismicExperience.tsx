@@ -18,7 +18,11 @@ import {
 import { SeismicAudioEngine } from "../../audio/seismicAudio";
 import { SeismicStage } from "../../rendering/SeismicStage";
 import { buildInfo } from "../../generated/buildInfo";
-import { cascadiaMicroScenario, seismometer } from "../../simulation/scenario";
+import {
+  cascadiaMicroScenario,
+  seismicScenarios,
+  seismometer,
+} from "../../simulation/scenario";
 import type { Epicenter, WaveEvent, WaveMode } from "../../simulation/types";
 import { formatArrival, sampleWaveAt } from "../../simulation/waveMath";
 import {
@@ -36,6 +40,7 @@ export default function SeismicExperience() {
 
     return readPreferences();
   });
+  const [scenario, setScenario] = useState(cascadiaMicroScenario);
   const [activeEvent, setActiveEvent] = useState<WaveEvent | null>(null);
   const [kernelMode, setKernelMode] = useState<WaveMode>("cpu");
   const [stageStatus, setStageStatus] = useState("Ready");
@@ -70,7 +75,7 @@ export default function SeismicExperience() {
         startedAtSeconds: performance.now() / 1000,
         magnitude: preferences.magnitude,
         material: {
-          ...cascadiaMicroScenario.material,
+          ...scenario.material,
           attenuation: preferences.attenuation,
         },
       };
@@ -79,11 +84,16 @@ export default function SeismicExperience() {
       setStageStatus(`${label} · source armed`);
       void audioRef.current?.playEvent(event, preferences.audioGain);
     },
-    [preferences.attenuation, preferences.audioGain, preferences.magnitude],
+    [
+      preferences.attenuation,
+      preferences.audioGain,
+      preferences.magnitude,
+      scenario,
+    ],
   );
 
   const strikePrimaryFault = useCallback(() => {
-    const fault = cascadiaMicroScenario.faults[0];
+    const fault = scenario.faults[0];
     strikeFault(
       {
         xKm: (fault.start[0] + fault.end[0]) / 2,
@@ -91,7 +101,16 @@ export default function SeismicExperience() {
       },
       fault.name,
     );
-  }, [strikeFault]);
+  }, [scenario, strikeFault]);
+
+  const handleScenarioChange = useCallback((nextId: string) => {
+    const next = seismicScenarios.find((s) => s.id === nextId);
+    if (next) {
+      setScenario(next);
+      setActiveEvent(null);
+      setStageStatus(`${next.name} loaded`);
+    }
+  }, []);
 
   const seismometerSample = useMemo(
     () => sampleWaveAt(seismometer, activeEvent, clockSeconds),
@@ -131,7 +150,7 @@ export default function SeismicExperience() {
         aria-label="Earthquake wave simulator"
       >
         <SeismicStage
-          scenario={cascadiaMicroScenario}
+          scenario={scenario}
           activeEvent={activeEvent}
           exaggeration={preferences.exaggeration}
           showArrivalBands={preferences.showArrivalBands}
@@ -141,6 +160,29 @@ export default function SeismicExperience() {
         />
 
         <aside className="control-surface" aria-label="Simulation controls">
+          <div
+            className="scenario-row"
+            role="radiogroup"
+            aria-label="Seismic scenario"
+          >
+            {seismicScenarios.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                role="radio"
+                aria-checked={option.id === scenario.id}
+                className={
+                  option.id === scenario.id
+                    ? "scenario-chip active"
+                    : "scenario-chip"
+                }
+                onClick={() => handleScenarioChange(option.id)}
+                title={`${option.name} · Vp ${option.material.pVelocityKmS} km/s · Vs ${option.material.sVelocityKmS} km/s`}
+              >
+                {option.name.split(" ")[0]}
+              </button>
+            ))}
+          </div>
           <button
             className="strike-button"
             type="button"

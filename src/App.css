@@ -117,6 +117,30 @@
   padding: 16px;
 }
 
+.scenario-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.scenario-chip {
+  background: #2a3041;
+  border: 1px solid #3b4257;
+  border-radius: 999px;
+  color: #cfd7e8;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+}
+
+.scenario-chip.active {
+  background: #1d8fce;
+  border-color: #1d8fce;
+  color: #ffffff;
+}
+
 .strike-button {
   align-items: center;
   background: #d34a24;
