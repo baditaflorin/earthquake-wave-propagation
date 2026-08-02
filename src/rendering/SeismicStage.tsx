@@ -13,6 +13,7 @@ import {
   distanceToFaultKm,
   nearestPointOnSegment,
 } from "../simulation/waveMath";
+import { createRing, updateArrivalRings } from "./arrivalRings";
 
 type SeismicStageProps = {
   readonly scenario: SeismicScenario;
@@ -284,46 +285,6 @@ export function SeismicStage({
       aria-label="Interactive seismic terrain"
     />
   );
-}
-
-function createRing(color: number): THREE.Line {
-  const points: THREE.Vector3[] = [];
-  for (let i = 0; i <= 160; i += 1) {
-    const angle = (i / 160) * Math.PI * 2;
-    points.push(new THREE.Vector3(Math.cos(angle), 1.2, Math.sin(angle)));
-  }
-
-  const ring = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(points),
-    new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.8 }),
-  );
-  ring.visible = false;
-  return ring;
-}
-
-function updateArrivalRings(
-  pRing: THREE.Line,
-  sRing: THREE.Line,
-  event: WaveEvent | null,
-  nowSeconds: number,
-  visible: boolean,
-) {
-  if (!event || !visible) {
-    pRing.visible = false;
-    sRing.visible = false;
-    return;
-  }
-
-  const elapsed = Math.max(0, nowSeconds - event.startedAtSeconds);
-  const pRadius = elapsed * event.material.pVelocityKmS;
-  const sRadius = elapsed * event.material.sVelocityKmS;
-
-  pRing.position.set(event.epicenter.xKm, 0, event.epicenter.zKm);
-  sRing.position.set(event.epicenter.xKm, 0, event.epicenter.zKm);
-  pRing.scale.setScalar(Math.max(0.1, pRadius));
-  sRing.scale.setScalar(Math.max(0.1, sRadius));
-  pRing.visible = pRadius < 95;
-  sRing.visible = sRadius < 95;
 }
 
 function updateEpicenter(marker: THREE.Mesh, event: WaveEvent | null) {
